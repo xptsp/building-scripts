@@ -7,11 +7,11 @@ source ~/.bash_aliases
 #################################################################################
 # Compile latest version of "libmnl" from the netfilter project if not already done:
 #################################################################################
-if [[ ! -d ${BUILD}/libmnl/install || "$1" =~ (-f|--force)]]; then 
+if [[ ! -d ${BUILD}/libmnl/install || "$1" =~ (-f|--force) ]]; then 
 	cd ${BUILD}
 	git clone https://git.netfilter.org/libmnl
 	cd ${BUILD}/libmnl
-	mkdir -p {install,modded}
+	mkdir -p install
 	./autogen.sh
 	./configure --host=arm-linux-gnueabihf --prefix=$PWD/install
 	make
@@ -26,6 +26,8 @@ NEW_LIBMNL_VER=$(git_version libmnl ${LIBMNL_BUILD})
  
 #================================================================================
 # Modify existing deb package for "libmnl0" with our compiled files:
+test -d ${BUILD}/libmnl/modded && rm -rf ${BUILD}/libmnl/modded
+mkdir -p ${BUILD}/libmnl/modded
 cd ${BUILD}/libmnl/modded
 DIR=libmnl0_${NEW_LIBMNL_VER}_armhf
 apt download libmnl0=${OLD_LIBMNL_VER}
@@ -42,7 +44,8 @@ rm DEBIAN/{shlibs,symbols,triggers}
 cd ..
 dpkg-deb --build --root-owner-group ${DIR}
 apt install -y ./${DIR}.deb
-mv ${DIR}.deb ${BUILD}
+rm ${PPA:-"${BUILD}"}/libmnl*.deb
+mv ${DIR}.deb ${PPA:-"${BUILD}"}
 
 #================================================================================
 # Modify existing deb package for "libmnl-dev" with our compiled files:
@@ -65,4 +68,4 @@ find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 cd ..
 dpkg-deb --build --root-owner-group ${DIR}
 apt install -y ./${DIR}.deb
-mv ${DIR}.deb ${BUILD}
+mv ${DIR}.deb ${PPA:-"${BUILD}"}

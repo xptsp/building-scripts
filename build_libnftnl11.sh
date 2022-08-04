@@ -3,16 +3,16 @@
 # Setup our environment:
 source ~/.bash_aliases
 [[ -z "${BUILD}" ]] && BUILD=/build
-test -d ${BUILD}/libmnl || source build_libmnl0.sh
+source ./build_libmnl0.sh
 
 #################################################################################
 # Compile lastest version of libnftnl for armhf if not already done:
 #################################################################################
-if [[ ! -d ${BUILD}/libnftnl || "$1" =~ (-f|--force)]]; then
+if [[ ! -d ${BUILD}/libnftnl || "$1" =~ (-f|--force) ]]; then
 	cd ${BUILD}
 	git clone git://git.netfilter.org/libnftnl
 	cd ${BUILD}/libnftnl
-	mkdir -p {install,modded}
+	mkdir -p install
 	./autogen.sh
 	./configure --host=arm-linux-gnueabihf --prefix=$PWD/install
 	make clean
@@ -29,6 +29,8 @@ test -d libnftnl11_${NEW_LIBNFTNL_VER}_armhf && exit 0
 
 #================================================================================
 # Modify existing deb package for "libnftnl11" with our compiled files:
+test -d ${BUILD}/libnftnl/modded && rm -rf ${BUILD}/libnftnl/modded
+mkdir -p ${BUILD}/libnftnl/modded
 cd ${BUILD}/libnftnl/modded
 DIR=libnftnl11_${NEW_LIBNFTNL_VER}_armhf
 apt download libnftnl11=${OLD_LIBNFTNL_VER}
@@ -48,7 +50,8 @@ find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 cd ..
 dpkg-deb --build --root-owner-group ${DIR}
 apt install -y ./${DIR}.deb
-mv ${DIR}.deb ${BUILD}
+rm ${PPA:-"${BUILD}"}/libnftnl*.deb
+mv ${DIR}.deb ${PPA:-"${BUILD}"}
 
 #================================================================================
 # Modify existing deb package for "libnftnl-dev" with our compiled files:
@@ -69,4 +72,4 @@ find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 cd ..
 dpkg-deb --build --root-owner-group ${DIR}
 apt install -y ./${DIR}.deb
-mv ${DIR}.deb ${BUILD}
+mv ${DIR}.deb ${PPA:-"${BUILD}"}

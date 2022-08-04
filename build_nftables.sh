@@ -3,16 +3,16 @@
 # Setup our environment:
 source ~/.bash_aliases
 [[ -z "${BUILD}" ]] && BUILD=/build
-test -d ${BUILD}/libnftnl11 || source build_libnftnl11.sh
+source ./build_libnftnl11.sh
 
 #################################################################################
 # Compile latest version of nft for armhf if not already done:
 #################################################################################
-if [[ ! -d cd ${BUILD}/nftables/ || "$1" =~ (-f|--force)]]; then  
+if [[ ! -d ${BUILD}/nftables/ || "$1" =~ (-f|--force) ]]; then  
 	cd ${BUILD}
 	git clone git://git.netfilter.org/nftables
 	cd ${BUILD}/nftables/
-	mkdir -p {install,modded}
+	mkdir -p install
 	./autogen.sh
 	./configure --host=arm-linux-gnueabihf --prefix=$PWD/install --with-mini-gmp --without-cli
 	make
@@ -27,6 +27,8 @@ NEW_NFTABLES_VER=$(git_version nftables ${LIBNFTNL_BUILD})
 
 #================================================================================
 # Modify existing deb package for "libnftnl-dev" with our compiled files:
+test -d ${BUILD}/nftables/modded && rm -rf ${BUILD}/nftables/modded
+mkdir -p ${BUILD}/nftables/modded
 cd ${BUILD}/nftables/modded
 DIR=nftables_${NEW_NFTABLES_VER}_armhf
 apt download nftables=${OLD_NFTABLES_VER}
@@ -93,4 +95,5 @@ find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 cd ..
 dpkg-deb --build --root-owner-group ${DIR}
 apt install -y ./*.deb
-mv *.deb ${BUILD}
+rm ${PPA:-"${BUILD}"}/*nftables*.deb
+mv ${DIR}.deb ${PPA:-"${BUILD}"}
