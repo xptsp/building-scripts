@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Tools needed for compiling stuff on the BPI-R2:
+apt install -y git make gcc dh-autoreconf bison flex asciidoc pkg-config docbook-xsl xsltproc libxml2-utils python3-distutils uuid-dev
+
+# Tools needed for compiling the kernel on the BPI-R2:
+apt install -y gcc-arm-linux-gnueabihf libc6-armhf-cross u-boot-tools bc make gcc libc6-dev libncurses5-dev libssl-dev bison flex ccache
+
+# APT Packages for the wheel2deb package:
+apt install -y python3-apt apt-file dpkg-dev fakeroot build-essential devscripts debhelper python3-smbus
+pip install --upgrade pip setuptools wheel wheel2deb
+
+# Add our aliases to the standard bash aliases file, then load them again:
+cat << EOF > ~/.bash_aliases
+git_version() {
+	cd ${BASE}/$1 2> /dev/null || return
+	echo $(git log | grep build: | grep -m 1 -o "[0-9]*\.[0-9]*\.[0-9]*")-${2:-"1"}~git$(git log | grep -m 1 -e "^commit " | awk '{print $2}' | cut -c1-7)
+}
+deb_version() {
+	apt list $1 -a 2> /dev/null | grep -v local | grep -v git | grep $1 | head -1 | awk '{print $2}'	
+}
+EOF
+
+# Add our "build" directory location to the ".bashrc" script:
+echo "BUILD=/build" >> ~/.bashrc
+mkdir -p /build
