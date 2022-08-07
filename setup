@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Tools needed for compiling stuff on the BPI-R2:
-apt install -y git make gcc dh-autoreconf bison flex asciidoc pkg-config docbook-xsl xsltproc libxml2-utils python3-distutils uuid-dev
+apt install -y git make gcc dh-autoreconf bison flex asciidoc pkg-config docbook-xsl xsltproc libxml2-utils python3-distutils uuid-dev checkinstall
 
 # Tools needed for compiling the kernel on the BPI-R2:
 apt install -y gcc-arm-linux-gnueabihf libc6-armhf-cross u-boot-tools bc libc6-dev libncurses5-dev libssl-dev ccache
