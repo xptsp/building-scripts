@@ -1,4 +1,5 @@
 #!/bin/bash
+if ! ischroot; then echo "ERROR: Not in a chroot environment!  Aborting!"; exit 1; fi
 
 #================================================================================
 # Function to compile latest version of nft for armhf if not already done:
@@ -6,6 +7,7 @@ nftables_compile() {
 	cd ${BUILD}
 	git clone git://git.netfilter.org/nftables
 	cd ${BUILD}/nftables/
+	test -d install && rm -rf install
 	mkdir -p install
 	./autogen.sh
 	./configure --host=arm-linux-gnueabihf --prefix=$PWD/install --with-mini-gmp --without-cli

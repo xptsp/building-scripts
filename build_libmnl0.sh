@@ -1,4 +1,5 @@
 #!/bin/bash
+if ! ischroot; then echo "ERROR: Not in a chroot environment!  Aborting!"; exit 1; fi
 
 #================================================================================
 # Function to compile latest version of "libmnl" from the netfilter project:

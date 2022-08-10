@@ -1,4 +1,5 @@
 #!/bin/bash
+if ! ischroot; then echo "ERROR: Not in a chroot environment!  Aborting!"; exit 1; fi
 
 #################################################################################
 # Compile lastest version of libnftnl for armhf if not already done:

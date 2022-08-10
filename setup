@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# Abort if not in a chroot environment!
+if ! ischroot; then echo "ERROR: Not in a chroot environment!  Aborting!"; exit 1; fi
+
 # Tools needed for compiling stuff on the BPI-R2:
 apt install -y git make gcc dh-autoreconf bison flex asciidoc pkg-config docbook-xsl xsltproc libxml2-utils python3-distutils uuid-dev checkinstall
 
 # Tools needed for compiling the kernel on the BPI-R2:
-apt install -y gcc-arm-linux-gnueabihf libc6-armhf-cross u-boot-tools bc libc6-dev libncurses5-dev libssl-dev ccache
+apt install -y gcc-arm-linux-gnueabihf libc6-armhf-cross u-boot-tools bc libc6-dev libncurses5-dev libssl-dev ccache libip4tc-dev libip6tc-dev libiptc-dev
 
 # APT Packages for the wheel2deb package:
 apt install -y apt-file dpkg-dev fakeroot build-essential devscripts debhelper python3-smbus python3-pip
