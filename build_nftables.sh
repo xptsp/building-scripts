@@ -50,7 +50,7 @@ nftables_package() {
 	sed -i "s|${LIBNFTABLES1_VER}|libnftables1 (= ${NEW_NFTABLES_VER})|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 
 	#================================================================================
 	# Modify existing deb package for "libnftables1" with our compiled files:
@@ -75,7 +75,7 @@ nftables_package() {
 	sed -i "s|$(grep -o "libnftnl11 (>= [^)]*)" DEBIAN/control)|libnftnl11 (>= ${NEW_LIBNFTNL_VER})|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 
 	#================================================================================
 	# Modify existing deb package for "libnftables-dev" with our compiled files:
@@ -95,7 +95,7 @@ nftables_package() {
 	sed -i "s|$(grep -o "libnftables1 (= [^)]*)" DEBIAN/control)|libnftables1 (= ${NEW_NFTABLES_VER})|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 	apt install -y ./*.deb
 	rm ${PPA:-"${BUILD}"}/*nftables*.deb
 	mv ${DIR}.deb ${PPA:-"${BUILD}"}

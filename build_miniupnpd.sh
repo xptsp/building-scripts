@@ -76,7 +76,7 @@ function miniupnp_package() {
 	sed -i "s|^Installed-Size: .*|Installed-Size: $(( $(du -s . | awk '{print $1}') - $(du -s DEBIAN | awk '{print $1}') ))|" DEBIAN/control
 	find . -type f -exec md5sum {} \; | grep -v DEBIAN > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 }
 
 #================================================================================
@@ -102,7 +102,7 @@ function miniupnp_nftables_package() {
 	sed -i "s|^Depends: .*|${LINE}|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 }
 
 #================================================================================
@@ -124,7 +124,7 @@ function miniupnp_iptables_package() {
 	sed -i "s|^Depends: .*|${LINE}|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 }
 
 # Setup our environment:

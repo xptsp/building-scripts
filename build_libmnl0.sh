@@ -45,7 +45,7 @@ function libmnl_package() {
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	rm DEBIAN/{shlibs,symbols,triggers}
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 	apt install -y ./${DIR}.deb
 	rm ${PPA:-"${BUILD}"}/libmnl*.deb
 	mv ${DIR}.deb ${PPA:-"${BUILD}"}
@@ -69,7 +69,7 @@ function libmnl_package() {
 	sed -i "s|^Depends: .*|Depends: libmnl0 (= ${NEW_LIBMNL_VER})|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 	apt install -y ./${DIR}.deb
 	mv ${DIR}.deb ${PPA:-"${BUILD}"}
 }

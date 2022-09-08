@@ -48,7 +48,7 @@ function libnftnl_package() {
 	sed -i "s|${OLD_DEPENDS[-1]}|${NEW_LIBMNL_VER}\)|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 	apt install -y ./${DIR}.deb
 	rm ${PPA:-"${BUILD}"}/libnftnl*.deb
 	mv ${DIR}.deb ${PPA:-"${BUILD}"}
@@ -70,7 +70,7 @@ function libnftnl_package() {
 	sed -i "s|$(grep -o "libnftnl11 (= [^)]*)" DEBIAN/control)|libnftnl11 (= ${NEW_LIBNFTNL_VER})|" DEBIAN/control
 	find usr -type f -exec md5sum {} \; > DEBIAN/md5sums
 	cd ..
-	dpkg-deb --build --root-owner-group ${DIR}
+	dpkg-deb -Zxz --build --root-owner-group ${DIR}
 	apt install -y ./${DIR}.deb
 	mv ${DIR}.deb ${PPA:-"${BUILD}"}
 }
