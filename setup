@@ -10,7 +10,7 @@ apt install -y git make gcc dh-autoreconf bison flex asciidoc pkg-config docbook
 apt install -y gcc-arm-linux-gnueabihf libc6-armhf-cross u-boot-tools bc libc6-dev libncurses5-dev libssl-dev ccache libip4tc-dev libip6tc-dev libiptc-dev
 
 # APT Packages for the wheel2deb package:
-apt install -y apt-file dpkg-dev fakeroot build-essential devscripts debhelper python3-smbus python3-pip
+apt install -y apt-file dpkg-dev fakeroot build-essential devscripts debhelper python3-smbus python3-pip libffi-dev
 pip install --upgrade pip setuptools wheel wheel2deb
 
 # Add our aliases to the standard bash aliases file, then load them again:
